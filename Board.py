@@ -1,14 +1,10 @@
-import math
-import random
 
 import numpy as np
 
-from Tile import Tile
-from enum import Enum
-
+from Tile import Tile, State
 
 class Board:
-    current_level: int = 2
+    current_level: int = 5
     successes_int_current_level: int = 0
     game_state_hide: bool = True
 
@@ -25,14 +21,21 @@ class Board:
                             self.tile_size_px, self.values[i * size + j])
                 self.tiles.append(tile)
         self.tiles.sort(key=lambda t: t.number)
-        self.uncover()
+        self.set_state_value()
 
-    def uncover(self):
+    def set_state_value(self):
         for i in range(self.current_level + 1):
             for tile in self.tiles:
                 if tile.number == i:
-                    tile.is_hidden = False
+                    tile.state = State.VALUE
         self.draw()
+
+    def set_state_on(self):
+        for i in range(self.current_level + 1):
+            for tile in self.tiles:
+                if tile.number == i:
+                    tile.state = State.ON
+
 
     def shuffle_values(self):
         np.random.shuffle(self.values)
@@ -48,16 +51,16 @@ class Board:
             return "YOU LOST"
 
         if tile.number == 1:
-            self.hide_all_tiles()
+            self.set_state_on()
         self.successes_int_current_level += 1
-        tile.is_hidden = False
+        tile.state = State.OFF
         tile.draw()
         if self.successes_int_current_level == self.current_level:
             self.successes_int_current_level = 0
             self.current_level += 1
             self.hide_all_tiles()
             self.shuffle_values()
-            self.uncover()
+            self.set_state_value()
             self.draw()
             return "NEXT ROUND"
 
@@ -73,5 +76,5 @@ class Board:
 
     def hide_all_tiles(self):
         for tile in self.tiles:
-            tile.is_hidden = True
+            tile.state = State.OFF
         self.draw()
