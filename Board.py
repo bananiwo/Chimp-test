@@ -1,12 +1,11 @@
-
 import numpy as np
 
 from Tile import Tile, State
 
+
 class Board:
     current_level: int = 5
     successes_int_current_level: int = 0
-    game_state_hide: bool = True
 
     def __init__(self, canvas, size=5):
         self.tiles = np.full((size, size), False, dtype=bool)
@@ -36,20 +35,18 @@ class Board:
                 if tile.number == i:
                     tile.state = State.ON
 
-
     def shuffle_values(self):
         np.random.shuffle(self.values)
         for value, tile in zip(self.values, self.tiles):
             tile.number = value
 
     def select_tile(self, mouse_x, mouse_y):
-        if not self.game_state_hide:
-            return
         tile = self.get_tile(mouse_x, mouse_y)
+        if self.current_level > 0 and tile.state == State.OFF:
+            return
         expected_value = self.successes_int_current_level + 1
-        if tile.number != expected_value:
+        if tile.state == State.ON and tile.number != expected_value:
             return "YOU LOST"
-
         if tile.number == 1:
             self.set_state_on()
         self.successes_int_current_level += 1
