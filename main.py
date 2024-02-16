@@ -2,31 +2,58 @@ import PySimpleGUI as sg
 
 from Board import Board
 
-canvas_height = 900
-canvas_width = 900
 
-
-def main():
+def main(size, canvas_size):
     layout = [
-        {sg.G((canvas_width, canvas_height), (0, 0), (canvas_width, canvas_height), enable_events=True,
-              background_color="light grey", k="-GRAPH-")}
+        [sg.HSep(), sg.B("RESTART", k="-RESTART-"), sg.HSep()],
+        [sg.G((canvas_size, canvas_size), (0, 0), (canvas_size, canvas_size), enable_events=True,
+              k="-GRAPH-")]
     ]
     window = sg.Window("Chimpanzee game", layout, finalize=True)
     graph = window["-GRAPH-"]
-    board = Board(graph, 5)
+    board = Board(graph, size)
+    board.draw()
     while True:
-        event, values = window.read(timeout=16)
+        event, values = window.read()
         graph.erase()
-        board.draw()
-
         if event == "-GRAPH-":
             mouse_x, mouse_y = values["-GRAPH-"]
-            board.flip_tile(mouse_x, mouse_y)
+            round = board.select_tile(mouse_x, mouse_y)
+            board.draw()
+            if round == "YOU WON":
+                sg.popup_ok("YOU WON\nPLAY AGAIN")
+                board = Board(graph, size)
+            elif round == "YOU LOST":
+                sg.popup_ok("YOU LOST\nTRY AGAIN")
+                board = Board(graph, size)
 
+        if event == "-RESTART-":
+            board = Board(graph, size)
         if event in ("Exit", sg.WIN_CLOSED):
             break
     window.close()
 
 
+def difficulty_window():
+    layout = [[sg.T("Select difficulty")],
+              [sg.B("EASY"), sg.B("HARD")]
+              ]
+    window = sg.Window("Chimpanzee game", layout, finalize=True)
+    while True:
+        event, values = window.read()
+        if event in ("Exit", sg.WIN_CLOSED):
+            break
+        if event == "EASY":
+            size = 5
+        elif event == "HARD":
+            size = 7
+        return size
+    window.close()
+
+
 if __name__ == "__main__":
-    main()
+    sg.theme("dark grey")
+    size = difficulty_window()
+    w, h = sg.Window.get_screen_size()
+    if size is not None:
+        main(size, h - 200)
