@@ -47,8 +47,9 @@ class Board:
         expected_value = self.successes_int_current_level + 1
         if tile.state == State.ON and tile.number != expected_value:
             return "YOU LOST"
-        if tile.number == 1:
+        if tile.state == State.VALUE:
             self.set_state_on()
+            return
         self.successes_int_current_level += 1
         tile.state = State.OFF
         tile.draw()
