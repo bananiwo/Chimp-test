@@ -8,6 +8,11 @@ This project is a simple game inspired by Tetsuro Matsuzawa's experiment on chim
 
 The Chimpanzee Memory Game challenges players to remember and replicate sequences of tiles on the screen. The game presents a sequence of numbers, which the player must memorize. After a brief period, the numbers disappear, and the player is tasked with reproducing the sequence from memory. With each successful replication, the sequence becomes longer, increasing the difficulty and testing the player's memory capabilities.
 
+## Demo
+![1](https://github.com/bananiwo/Game-of-Life/assets/70852391/64edcfec-e796-4fa3-986c-94393ac123d7) ![2](https://github.com/bananiwo/Game-of-Life/assets/70852391/225580c5-8671-4393-b6e4-351601558035)
+
+
+
 ## Features
 
 - Interactive gameplay simulating the memory task faced by chimpanzees in the experiment.
